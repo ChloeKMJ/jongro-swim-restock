@@ -15,7 +15,6 @@ PAGE_URL = 'https://www.ijongno.co.kr/fmcs/3?page=1&lecture_type=R&center=JONGNO
 TOTAL_CHECKS = 9
 CHECK_INTERVAL = 30
 
-
 def send_telegram(message):
     url = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage'
     requests.post(url, data={'chat_id': TELEGRAM_CHAT_ID, 'text': message}, timeout=10)
@@ -42,6 +41,7 @@ def check():
     response.raise_for_status()
     return response.json()
 
+send_telegram("워크플로우 시작")
 
 for i in range(1, TOTAL_CHECKS + 1):
     now = datetime.now().strftime("%H:%M:%S")
