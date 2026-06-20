@@ -1,6 +1,8 @@
 import requests
 import os
 import sys
+import time
+from datetime import datetime
 
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
@@ -9,6 +11,9 @@ TARGET_CLASS = '수영06시(월수금)'
 
 API_URL = 'https://www.ijongno.co.kr/rest/lecture/list'
 PAGE_URL = 'https://www.ijongno.co.kr/fmcs/3?page=1&lecture_type=R&center=JONGNO02&event=1000000000&class=1000010000'
+
+TOTAL_CHECKS = 9
+CHECK_INTERVAL = 30
 
 
 def send_telegram(message):
@@ -38,24 +43,38 @@ def check():
     return response.json()
 
 
-lectures = check()
+for i in range(1, TOTAL_CHECKS + 1):
+    now = datetime.now().strftime("%H:%M:%S")
+    print(f"[{now}] 조회 {i}/{TOTAL_CHECKS}")
 
-for lecture in lectures:
-    if lecture.get('class_nm') == TARGET_CLASS:
-        status = lecture.get('status')
-        print(f"강좌: {TARGET_CLASS} | 상태: {status}")
+    try:
+        lectures = check()
+        found = False
+        for lecture in lectures:
+            if lecture.get('class_nm') == TARGET_CLASS:
+                found = True
+                status = lecture.get('status')
+                print(f"[{now}] {TARGET_CLASS} | 상태: {status}")
 
-        if status == 'R':
-            msg = (
-                f"[종로구민회관 수강신청 알림]\n"
-                f"{TARGET_CLASS} 접수 시작!\n"
-                f"지금 바로 신청하세요!\n\n"
-                f"{PAGE_URL}"
-            )
-            send_telegram(msg)
-            print("텔레그램 알림 발송 완료")
-        else:
-            print("아직 접수종료 상태입니다.")
-        sys.exit(0)
+                if status == 'R':
+                    msg = (
+                        f"[종로구민회관 수강신청 알림]\n"
+                        f"{TARGET_CLASS} 접수 시작!\n"
+                        f"지금 바로 신청하세요!\n\n"
+                        f"{PAGE_URL}"
+                    )
+                    send_telegram(msg)
+                    print(f"[{now}] 텔레그램 알림 발송 완료")
+                break
 
-print(f"강좌 '{TARGET_CLASS}' 정보를 찾지 못했습니다.")
+        if not found:
+            print(f"[{now}] 강좌 '{TARGET_CLASS}' 정보를 찾지 못했습니다.")
+
+    except Exception as e:
+        print(f"[{now}] 오류 발생: {e}")
+
+    if i < TOTAL_CHECKS:
+        print(f"30초 후 다음 조회...")
+        time.sleep(CHECK_INTERVAL)
+
+print("총 9회 조회 완료. 종료합니다.")
