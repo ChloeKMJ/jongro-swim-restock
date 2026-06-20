@@ -2,13 +2,12 @@ name: 수영 수강신청 모니터링
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # 30분마다 실행 (각 실행이 28분간 2분마다 체크)
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
 
     steps:
       - uses: actions/checkout@v4
