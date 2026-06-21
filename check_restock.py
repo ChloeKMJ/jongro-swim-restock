@@ -6,7 +6,7 @@ from datetime import datetime
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
 
-TARGET_CLASS = '수영06시(화목)'
+TARGET_CLASS = '수영08시(화목)'
 
 API_URL = 'https://www.ijongno.co.kr/rest/lecture/list'
 PAGE_URL = 'https://www.ijongno.co.kr/fmcs/3?page=1&lecture_type=R&center=JONGNO02&event=1000000000&class=1000010000'
