@@ -1,6 +1,5 @@
 import requests
 import os
-import sys
 import time
 from datetime import datetime
 
@@ -12,8 +11,8 @@ TARGET_CLASS = '수영06시(화목)'
 API_URL = 'https://www.ijongno.co.kr/rest/lecture/list'
 PAGE_URL = 'https://www.ijongno.co.kr/fmcs/3?page=1&lecture_type=R&center=JONGNO02&event=1000000000&class=1000010000'
 
-TOTAL_CHECKS = 9
-CHECK_INTERVAL = 30
+TOTAL_CHECKS = 55
+CHECK_INTERVAL = 60
 
 def send_telegram(message):
     url = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage'
@@ -74,7 +73,6 @@ for i in range(1, TOTAL_CHECKS + 1):
         print(f"[{now}] 오류 발생: {e}")
 
     if i < TOTAL_CHECKS:
-        print(f"30초 후 다음 조회...")
         time.sleep(CHECK_INTERVAL)
 
-print("총 9회 조회 완료. 종료합니다.")
+print("55회 조회 완료. 종료합니다.")
